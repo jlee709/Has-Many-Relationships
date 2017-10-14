@@ -17,15 +17,24 @@ id int,
 user_name varchar(90)
 last_name varchar(90),
 first_name varchar(90), 
-created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-PRIMARY KEY (ID)
+created_at TIMESTAMP NOT NULL DEFAULT now(),
+updated_at TIMESTAMP NOT NULL DEFAULT now(),
+PRIMARY KEY (id)
 );
+
+--posts table
 
 DROP TABLE IF EXISTS posts_table
 
 CREATE TABLE Posts(
-UserID 100,
+id int,
+user_name varchar(90)
+title varchar(180),
+url varchar(510), 
+created_at TIMESTAMP NOT NULL DEFAULT now(),
+updated_at TIMESTAMP NOT NULL DEFAULT now(),
+PRIMARY KEY (id)
+
 
 )
 
