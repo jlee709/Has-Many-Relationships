@@ -1,51 +1,50 @@
--- start
+-- checking and driopping key DB if they exist 
+
 DROP DATABASE IF EXISTS has_many_blogs;
 DROP USER IF EXISTS has_many_user;
+CREATE USER has_many_user;
+CREATE DATABASE has_many_blogs WITH owner has_many_user;
 
-CREATE USER normal_user;
-CREATE DATABASE has_many_blogs WITH OWNER has_many_user;
+--connecting
+\c has_many_blogs has_many_user;
 
-\c has_many_blogs normal_user;
-\i blog_data.sql;
+--drop TABLES if exists on script run
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS users;
 
 
---drop table if exits 
-DROP TABLE IF EXISTS users_table
-
-CREATE TABLE Users (
-id int,
-user_name varchar(90)
-last_name varchar(90),
-first_name varchar(90), 
-created_at TIMESTAMP NOT NULL DEFAULT now(),
-updated_at TIMESTAMP NOT NULL DEFAULT now(),
-PRIMARY KEY (id)
+-- creating main user table 
+CREATE TABLE users (
+  id serial not null primary key,
+  username character varying(90) not null,
+  first_name character varying(90),
+  last_name character varying(90),
+  created_at timestamp not null default now(),
+  updated_at timestamp not null default now()
 );
 
---posts table
+-- creating posts table with referance to users id 
+CREATE TABLE posts (
+  id serial not null primary key,
+  title character varying(180),
+  url character varying(510),
+  content text,
+  created_at timestamp not null default now(),
+  updated_at timestamp not null default now(),
+  users_id integer references users(id) not null
+);
 
-DROP TABLE IF EXISTS posts_table
+-- creating comment table with referance to users and posts id
+CREATE TABLE  comments (
+  id serial not null primary key,
+  body character varying(510),
+  created_at timestamp not null default now(),
+  updated_at timestamp not null default now(),
+  users_id integer references users(id) not null,
+  posts_id integer references posts(id) not null
+);
 
-CREATE TABLE Posts(
-id int,
-user_name varchar(90)
-title varchar(180),
-url varchar(510), 
-created_at TIMESTAMP NOT NULL DEFAULT now(),
-updated_at TIMESTAMP NOT NULL DEFAULT now(),
-PRIMARY KEY (id)
+--runs main script
 
-
-)
-
-
--- 1. In `has_many_blogs.sql` Create the tables (including any PKs, Indexes, and Constraints that you may need)
- -- to fulfill the requirements of the **has_many_blogs schema** below.
-
-
--- 1. Create the necessary FKs needed to relate the tables according to the **relationship table** below.
--- 1. Run the provided `scripts/blog_data.sql`
-
-
--- 1. Create a query to get all fields from the `users` table
--- 1. Create a query to get all fields from the `posts` table where the `user_id` is 100
+\i scripts/blog_data.sql
